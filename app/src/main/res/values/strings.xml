@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Rick And Morty Serie</string>
+    <string name="title_characters">Personajes</string>
+    <string name="title_episodes">Episodios</string>
+    <string name="title_locations">Locaciones</string>
+    <string name="characters_error">No fue posible obtener el listado de personajes</string>
+    <string name="can_not_load_more_characters">No es posible cargar mas personajes</string>
+</resources>
