@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class CharactersModule {
+object CharactersModule {
 
     @Provides
     @Singleton

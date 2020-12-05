@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_episodes"
-        android:name="com.moises.rickandmortyserie.modules.episodes.EpisodeFragment"
+        android:name="com.moises.rickandmortyserie.modules.episodes.framework.ui.EpisodeFragment"
         android:label="@string/title_episodes"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_episodes" />
 
     <fragment
         android:id="@+id/navigation_locations"

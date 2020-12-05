@@ -7,13 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.moises.rickandmortyserie.core.arch.ScreenState
-import com.moises.rickandmortyserie.core.ui.BaseFragment
-import com.moises.rickandmortyserie.core.ui.toast
+import com.moises.rickandmortyserie.core.ui.*
 import com.moises.rickandmortyserie.databinding.FragmentCharactersBinding
 import com.moises.rickandmortyserie.modules.character.domain.model.Character
 import com.moises.rickandmortyserie.modules.character.framework.presentation.AllCharactersScreenState
 import com.moises.rickandmortyserie.modules.character.framework.presentation.CharacterViewModel
+import com.moises.rickandmortyserie.modules.character.framework.ui.adapter.CharactersAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +23,7 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
 
     private val characterViewModel : CharacterViewModel by viewModels()
     private lateinit var fragmentCharactersBinding: FragmentCharactersBinding
+    private lateinit var charactersAdapter: CharactersAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -39,8 +42,15 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
         })
     }
 
-    override fun bindViews() {
-
+    override fun bindViews() = with(fragmentCharactersBinding) {
+        charactersAdapter = CharactersAdapter {
+            requireContext().toast(it.name)
+        }
+        lstCharacters.addItemDecoration(SpacesItemDecoration(SPACE_ITEM_DECORATION))
+        lstCharacters.adapter = charactersAdapter
+        lstCharacters.layoutManager = StaggeredGridLayoutManager(
+            2,
+            StaggeredGridLayoutManager.VERTICAL)
     }
 
     override fun bindFragmentView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -60,11 +70,11 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     override fun showLoader() {
-
+        fragmentCharactersBinding.pbCharactersLoad.visible()
     }
 
     override fun hideLoader() {
-
+        fragmentCharactersBinding.pbCharactersLoad.gone()
     }
 
     private fun renderCharacters(allCharactersScreenState: AllCharactersScreenState) {
@@ -76,6 +86,10 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     private fun populateCharactersList(all : List<Character>) {
-        Log.e("CHARACTERS", all.toString())
+        charactersAdapter.updateDataSet(all.toMutableList())
+    }
+
+    companion object {
+        const val SPACE_ITEM_DECORATION = 12
     }
 }

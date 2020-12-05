@@ -54,7 +54,7 @@ class CharactersViewModelTest {
         MockitoAnnotations.initMocks(this)
         allCharactersUseCase = AllCharactersUseCase(dispatcherProvider, characterRepository)
         characterViewModel = CharacterViewModel(allCharactersUseCase, stringResources)
-        whenever(dispatcherProvider.ioDispatcher()).thenReturn(Dispatchers.IO)
+        whenever(dispatcherProvider.ioDispatcher()).thenReturn(Dispatchers.Main)
         whenever(stringResources.getCharactersErrorMessage()).thenReturn(ERROR)
     }
 
@@ -71,19 +71,12 @@ class CharactersViewModelTest {
             flow { emit(allCharacters) })
         characterViewModel.run {
             retrieveAllCharacters()
-            when (val state = allCharactersScreenState.getOrAwaitValue()) {
-                is ScreenState.Render -> {
-                    assertTrue(state.data is AllCharactersScreenState.Success)
-                    assertFalse(state.data is AllCharactersScreenState.Error)
-                    assertEquals(
-                        allCharacters.all,
-                        (state.data as AllCharactersScreenState.Success).allCharacters
-                    )
-                }
-            }
+            val state = allCharactersScreenState.getOrAwaitValue()
+            assertTrue(state is ScreenState.Render)
+            assertTrue((state as ScreenState.Render).data is AllCharactersScreenState.Success)
+            assertEquals((state.data as AllCharactersScreenState.Success).allCharacters, allCharacters.all)
         }
     }
-
 
     @Test
     fun `test unsuccessfully characters retrieved`() = testCoroutineScope.runBlockingTest {
@@ -92,16 +85,10 @@ class CharactersViewModelTest {
         )
         characterViewModel.run {
             retrieveAllCharacters()
-            when (val state = allCharactersScreenState.getOrAwaitValue()) {
-                is ScreenState.Render -> {
-                    assertFalse(state.data is AllCharactersScreenState.Success)
-                    assertTrue(state.data is AllCharactersScreenState.Error)
-                    assertEquals(
-                        ERROR,
-                        (state.data as AllCharactersScreenState.Error).message
-                    )
-                }
-            }
+            val state = allCharactersScreenState.getOrAwaitValue()
+            assertTrue(state is ScreenState.Render)
+            assertTrue((state as ScreenState.Render).data is AllCharactersScreenState.Error)
+            assertEquals((state.data as AllCharactersScreenState.Error).message, ERROR)
         }
     }
 
