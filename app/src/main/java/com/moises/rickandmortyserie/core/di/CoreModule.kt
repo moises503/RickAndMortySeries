@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class CoreModule {
+object CoreModule {
 
     @Provides
     @Singleton
@@ -45,7 +45,5 @@ class CoreModule {
     @Singleton
     fun providesDispatcher() : DispatcherProvider = DispatcherProviderImpl()
 
-    companion object {
-        const val URL_BASE = "https://rickandmortyapi.com/api/"
-    }
+    const val URL_BASE = "https://rickandmortyapi.com/api/"
 }

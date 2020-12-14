@@ -45,6 +45,7 @@ class CharactersViewModelTest {
 
     private lateinit var allCharactersUseCase: AllCharactersUseCase
     private lateinit var characterViewModel: CharacterViewModel
+    private val allCharacters = Faker.makeMockCharacterSuccessResponse()
     private val testDispatcher = TestCoroutineDispatcher()
     private val testCoroutineScope = TestCoroutineScope(testDispatcher)
 
@@ -66,12 +67,14 @@ class CharactersViewModelTest {
 
     @Test
     fun `test successfully characters retrieved`() = testCoroutineScope.runBlockingTest {
-        val allCharacters = makeMockCharacterSuccessResponse()
+        //When
         whenever(characterRepository.retrieveAllCharacters(anyInt())).thenReturn(
             flow { emit(allCharacters) })
+        //Then
         characterViewModel.run {
             retrieveAllCharacters()
             val state = allCharactersScreenState.getOrAwaitValue()
+            //Assert
             assertTrue(state is ScreenState.Render)
             assertTrue((state as ScreenState.Render).data is AllCharactersScreenState.Success)
             assertEquals((state.data as AllCharactersScreenState.Success).allCharacters, allCharacters.all)
@@ -80,44 +83,23 @@ class CharactersViewModelTest {
 
     @Test
     fun `test unsuccessfully characters retrieved`() = testCoroutineScope.runBlockingTest {
+        //When
         whenever(characterRepository.retrieveAllCharacters(anyInt())).thenReturn(
             flow { error("Network error") }
         )
+        //Then
         characterViewModel.run {
             retrieveAllCharacters()
             val state = allCharactersScreenState.getOrAwaitValue()
+            //Assert
             assertTrue(state is ScreenState.Render)
             assertTrue((state as ScreenState.Render).data is AllCharactersScreenState.Error)
             assertEquals((state.data as AllCharactersScreenState.Error).message, ERROR)
         }
     }
 
-
-    private fun makeMockCharacterSuccessResponse(): AllCharacters {
-        return AllCharacters(
-            pagination = Pagination(pages = 10),
-            all = listOf(
-                CharacterTest(
-                    name = "Rick Sanchez",
-                    status = "Alive",
-                    species = "Human",
-                    type = "",
-                    gender = "Male"
-                ),
-                CharacterTest(
-                    name = "Morty Smith",
-                    status = "Alive",
-                    species = "Human",
-                    type = "",
-                    gender = "Male"
-                )
-            )
-        )
-    }
-
     companion object {
         const val ERROR = "No fue posible cargar personajes"
     }
-
 
 }

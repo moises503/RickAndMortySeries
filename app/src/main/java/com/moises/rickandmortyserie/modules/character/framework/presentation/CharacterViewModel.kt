@@ -8,8 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.moises.rickandmortyserie.core.arch.ScreenState
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
 import com.moises.rickandmortyserie.modules.character.framework.res.StringResources
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class CharacterViewModel @ViewModelInject constructor(
@@ -39,11 +42,13 @@ class CharacterViewModel @ViewModelInject constructor(
 
     private fun canLoadMorePages() = currentPage < maxPages
 
+    @ExperimentalCoroutinesApi
     private fun sendCharacterRequest() {
-        _allCharactersScreenState.postValue(ScreenState.Loading)
         viewModelScope.launch {
             allCharactersUseCase.execute(AllCharactersUseCase.Params(currentPage))
-                .catch {
+                .onStart {
+                    _allCharactersScreenState.postValue(ScreenState.Loading)
+                }.catch {
                     _allCharactersScreenState.postValue(
                         ScreenState.Render(
                             AllCharactersScreenState.Error(

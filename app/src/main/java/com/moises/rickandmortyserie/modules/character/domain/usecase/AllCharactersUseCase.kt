@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class AllCharactersUseCase @Inject constructor(
     private val dispatcherProvider: DispatcherProvider,
     private val charactersRepository: CharacterRepository

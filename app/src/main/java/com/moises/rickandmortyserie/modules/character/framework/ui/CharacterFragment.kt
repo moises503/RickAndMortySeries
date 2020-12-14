@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.moises.rickandmortyserie.core.arch.ScreenState
 import com.moises.rickandmortyserie.core.ui.*
@@ -24,6 +23,7 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     private val characterViewModel : CharacterViewModel by viewModels()
     private lateinit var fragmentCharactersBinding: FragmentCharactersBinding
     private lateinit var charactersAdapter: CharactersAdapter
+    private var allCharacters = mutableListOf<Character>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -42,15 +42,18 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
         })
     }
 
-    override fun bindViews() = with(fragmentCharactersBinding) {
-        charactersAdapter = CharactersAdapter {
-            requireContext().toast(it.name)
+    override fun bindViews(): Unit = with(fragmentCharactersBinding) {
+        lstCharacters.apply {
+            charactersAdapter = CharactersAdapter {
+                activity?.toast(it.name)
+            }
+            addItemDecoration(SpacesItemDecoration(SPACE_ITEM_DECORATION))
+            adapter = charactersAdapter
+            layoutManager = StaggeredGridLayoutManager(
+                2,
+                StaggeredGridLayoutManager.VERTICAL)
+            addScrollListener()
         }
-        lstCharacters.addItemDecoration(SpacesItemDecoration(SPACE_ITEM_DECORATION))
-        lstCharacters.adapter = charactersAdapter
-        lstCharacters.layoutManager = StaggeredGridLayoutManager(
-            2,
-            StaggeredGridLayoutManager.VERTICAL)
     }
 
     override fun bindFragmentView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -86,10 +89,21 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     private fun populateCharactersList(all : List<Character>) {
-        charactersAdapter.updateDataSet(all.toMutableList())
+        allCharacters.addAll(all.toMutableList())
+        charactersAdapter.updateDataSet(allCharacters)
+    }
+
+    private fun addScrollListener() {
+        InfiniteScrollProvider().attach(
+            fragmentCharactersBinding.lstCharacters,
+            object : InfiniteScrollProvider.OnLoadMoreListener {
+                override fun onLoadMore() {
+                    characterViewModel.retrieveAllCharacters()
+                }
+            })
     }
 
     companion object {
-        const val SPACE_ITEM_DECORATION = 12
+        private const val SPACE_ITEM_DECORATION = 12
     }
 }
