@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface EpisodesEndPoint {
-    @GET("episodes/")
+    @GET("episode/")
     suspend fun retrieveAllEpisodes(@Query("page") page : Int) : AllEpisodesResponse
 }
