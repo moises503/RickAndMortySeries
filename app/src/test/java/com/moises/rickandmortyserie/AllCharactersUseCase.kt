@@ -1,6 +1,7 @@
 package com.moises.rickandmortyserie
 
 import com.moises.rickandmortyserie.core.arch.DispatcherProvider
+import com.moises.rickandmortyserie.core.assets.ResourceManager
 import com.moises.rickandmortyserie.modules.character.domain.model.AllCharacters
 import com.moises.rickandmortyserie.modules.character.domain.repository.CharacterRepository
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
@@ -27,6 +28,9 @@ class AllCharactersUseCaseTest {
     @Mock
     private lateinit var characterRepository: CharacterRepository
 
+    @Mock
+    private lateinit var resourceManager: ResourceManager
+
     private lateinit var allCharactersUseCase : AllCharactersUseCase
     private val allCharacters = Faker.makeMockCharacterSuccessResponse()
     private val testDispatcher = TestCoroutineDispatcher()
@@ -36,7 +40,7 @@ class AllCharactersUseCaseTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         MockitoAnnotations.initMocks(this)
-        allCharactersUseCase = AllCharactersUseCase(dispatcherProvider, characterRepository)
+        allCharactersUseCase = AllCharactersUseCase(dispatcherProvider, characterRepository, resourceManager)
         whenever(dispatcherProvider.ioDispatcher()).thenReturn(Dispatchers.Main)
     }
 
