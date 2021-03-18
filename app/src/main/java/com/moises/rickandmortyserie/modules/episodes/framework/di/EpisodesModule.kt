@@ -1,17 +1,13 @@
 package com.moises.rickandmortyserie.modules.episodes.framework.di
 
-import android.content.Context
 import com.moises.rickandmortyserie.modules.episodes.data.datasource.RemoteEpisodesDataSource
 import com.moises.rickandmortyserie.modules.episodes.data.repository.EpisodesRepositoryImpl
 import com.moises.rickandmortyserie.modules.episodes.domain.repository.EpisodesRepository
 import com.moises.rickandmortyserie.modules.episodes.framework.data.EpisodesEndPoint
 import com.moises.rickandmortyserie.modules.episodes.framework.data.RemoteEpisodesDataSourceImpl
-import com.moises.rickandmortyserie.modules.episodes.framework.res.StringResources
-import com.moises.rickandmortyserie.modules.episodes.framework.res.StringResourcesImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -33,9 +29,4 @@ object EpisodesModule {
     @Singleton
     fun providesEpisodesRepository(remoteEpisodesDataSource: RemoteEpisodesDataSource): EpisodesRepository =
         EpisodesRepositoryImpl(remoteEpisodesDataSource)
-
-    @Provides
-    @Singleton
-    fun providesStringResources(@ApplicationContext context : Context): StringResources =
-        StringResourcesImpl(context)
 }
