@@ -1,6 +1,7 @@
-package com.moises.rickandmortyserie
+package com.moises.rickandmortyserie.modules.characters
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.moises.rickandmortyserie.Faker
 import com.moises.rickandmortyserie.core.arch.DispatcherProvider
 import com.moises.rickandmortyserie.core.arch.ScreenState
 import com.moises.rickandmortyserie.core.assets.ResourceManager
@@ -23,10 +24,8 @@ import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-typealias CharacterTest = com.moises.rickandmortyserie.modules.character.domain.model.Character
-
 @ExperimentalCoroutinesApi
-class CharactersViewModelTest {
+class CharacterViewModelTest {
 
     @JvmField
     @Rule
@@ -101,5 +100,4 @@ class CharactersViewModelTest {
         const val NETWORK_ERROR = "Network error has occurred"
         const val CHARACTERS_ERROR = "characters_error"
     }
-
 }
