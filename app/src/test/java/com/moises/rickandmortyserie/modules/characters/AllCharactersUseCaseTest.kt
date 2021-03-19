@@ -1,8 +1,8 @@
-package com.moises.rickandmortyserie
+package com.moises.rickandmortyserie.modules.characters
 
+import com.moises.rickandmortyserie.Faker
 import com.moises.rickandmortyserie.core.arch.DispatcherProvider
 import com.moises.rickandmortyserie.core.assets.ResourceManager
-import com.moises.rickandmortyserie.modules.character.domain.model.AllCharacters
 import com.moises.rickandmortyserie.modules.character.domain.repository.CharacterRepository
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
 import com.nhaarman.mockitokotlin2.whenever
@@ -63,4 +63,12 @@ class AllCharactersUseCaseTest {
         }
     }
 
+
+    @Test(expected = Exception::class)
+    fun `test if send null params then throw an exception`() {
+        //Then
+        allCharactersUseCase.run {
+            execute(null)
+        }
+    }
 }

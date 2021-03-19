@@ -8,10 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.moises.rickandmortyserie.core.arch.ScreenState
-import com.moises.rickandmortyserie.core.ui.BaseFragment
-import com.moises.rickandmortyserie.core.ui.gone
-import com.moises.rickandmortyserie.core.ui.toast
-import com.moises.rickandmortyserie.core.ui.visible
+import com.moises.rickandmortyserie.core.ui.*
 import com.moises.rickandmortyserie.databinding.FragmentEpisodesBinding
 import com.moises.rickandmortyserie.modules.episodes.domain.model.Episode
 import com.moises.rickandmortyserie.modules.episodes.framework.presentation.EpisodeViewModel
@@ -48,6 +45,7 @@ class EpisodeFragment : BaseFragment<ScreenState<EpisodesScreenState>>() {
         binding.episodesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = episodesAdapter
+            addScrollListener()
         }
     }
 
@@ -86,5 +84,16 @@ class EpisodeFragment : BaseFragment<ScreenState<EpisodesScreenState>>() {
 
     private fun showEpisodes(allEpisodes: List<Episode>) {
         episodesAdapter.updateDataSet(allEpisodes.toMutableList())
+    }
+
+
+    private fun addScrollListener() {
+        InfiniteScrollProvider().attach(
+                binding.episodesRecyclerView,
+                object : InfiniteScrollProvider.OnLoadMoreListener {
+                    override fun onLoadMore() {
+                        episodesViewModel.retrieveAllEpisodes()
+                    }
+                })
     }
 }

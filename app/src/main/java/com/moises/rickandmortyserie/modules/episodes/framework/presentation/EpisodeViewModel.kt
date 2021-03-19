@@ -61,6 +61,8 @@ class EpisodeViewModel @Inject constructor(
                                 )
                         )
                     }.collect {
+                        maxPages = it.pagination.pages
+                        currentPage++
                         allEpisodes.addAll(it.all)
                         _allEpisodesScreenState.postValue(
                                 ScreenState.Render(
