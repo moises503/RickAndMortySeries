@@ -7,8 +7,9 @@ import com.moises.rickandmortyserie.modules.episodes.framework.data.model.Single
 class SingleEpisodeToEpisodeMapper : Mapper<SingleEpisode, Episode>() {
     override fun transform(value: SingleEpisode): Episode {
         return Episode(
-            id = value.id ?: 0,
-            name = value.name.orEmpty()
+                id = value.id ?: 0,
+                name = value.name.orEmpty(),
+                airDate = value.airDate.orEmpty()
         )
     }
 }
