@@ -1,23 +1,24 @@
 package com.moises.rickandmortyserie.modules.character.framework.presentation
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moises.rickandmortyserie.core.arch.ScreenState
+import com.moises.rickandmortyserie.core.assets.ResourceManager
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
-import com.moises.rickandmortyserie.modules.character.framework.res.StringResources
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CharacterViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CharacterViewModel @Inject constructor(
     private val allCharactersUseCase: AllCharactersUseCase,
-    private val stringResources: StringResources
+    private val resourceManager: ResourceManager
 ) : ViewModel() {
 
     private var _allCharactersScreenState = MutableLiveData<ScreenState<AllCharactersScreenState>>()
@@ -27,13 +28,14 @@ class CharacterViewModel @ViewModelInject constructor(
     val allCharactersScreenState: LiveData<ScreenState<AllCharactersScreenState>>
         get() = _allCharactersScreenState
 
+    @ExperimentalCoroutinesApi
     fun retrieveAllCharacters() {
         when {
             canLoadMorePages() -> sendCharacterRequest()
             else -> _allCharactersScreenState.postValue(
                 ScreenState.Render(
                     AllCharactersScreenState.Error(
-                        stringResources.getCanNotLoadErrorMessage()
+                        resourceManager.providesStringMessage(identifier = NOT_LOAD_ERROR)
                     )
                 )
             )
@@ -52,7 +54,7 @@ class CharacterViewModel @ViewModelInject constructor(
                     _allCharactersScreenState.postValue(
                         ScreenState.Render(
                             AllCharactersScreenState.Error(
-                                stringResources.getCharactersErrorMessage()
+                                resourceManager.providesStringMessage(identifier = CHARACTERS_ERROR)
                             )
                         )
                     )
@@ -68,5 +70,10 @@ class CharacterViewModel @ViewModelInject constructor(
                     )
                 }
         }
+    }
+
+    companion object {
+        private const val NOT_LOAD_ERROR = "can_not_load_more_characters"
+        private const val CHARACTERS_ERROR = "characters_error"
     }
 }

@@ -3,13 +3,11 @@ package com.moises.rickandmortyserie
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.moises.rickandmortyserie.core.arch.DispatcherProvider
 import com.moises.rickandmortyserie.core.arch.ScreenState
-import com.moises.rickandmortyserie.core.arch.model.Pagination
-import com.moises.rickandmortyserie.modules.character.domain.model.AllCharacters
+import com.moises.rickandmortyserie.core.assets.ResourceManager
 import com.moises.rickandmortyserie.modules.character.domain.repository.CharacterRepository
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
 import com.moises.rickandmortyserie.modules.character.framework.presentation.AllCharactersScreenState
 import com.moises.rickandmortyserie.modules.character.framework.presentation.CharacterViewModel
-import com.moises.rickandmortyserie.modules.character.framework.res.StringResources
 import com.moises.rickandmortyserie.rules.getOrAwaitValue
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +39,7 @@ class CharactersViewModelTest {
     private lateinit var dispatcherProvider: DispatcherProvider
 
     @Mock
-    private lateinit var stringResources: StringResources
+    private lateinit var resourceManager: ResourceManager
 
     private lateinit var allCharactersUseCase: AllCharactersUseCase
     private lateinit var characterViewModel: CharacterViewModel
@@ -53,10 +51,10 @@ class CharactersViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         MockitoAnnotations.initMocks(this)
-        allCharactersUseCase = AllCharactersUseCase(dispatcherProvider, characterRepository)
-        characterViewModel = CharacterViewModel(allCharactersUseCase, stringResources)
+        allCharactersUseCase = AllCharactersUseCase(dispatcherProvider, characterRepository, resourceManager)
+        characterViewModel = CharacterViewModel(allCharactersUseCase, resourceManager)
         whenever(dispatcherProvider.ioDispatcher()).thenReturn(Dispatchers.Main)
-        whenever(stringResources.getCharactersErrorMessage()).thenReturn(ERROR)
+        whenever(resourceManager.providesStringMessage(identifier = CHARACTERS_ERROR)).thenReturn(ERROR)
     }
 
     @After
@@ -85,7 +83,7 @@ class CharactersViewModelTest {
     fun `test unsuccessfully characters retrieved`() = testCoroutineScope.runBlockingTest {
         //When
         whenever(characterRepository.retrieveAllCharacters(anyInt())).thenReturn(
-            flow { error("Network error") }
+            flow { error(NETWORK_ERROR) }
         )
         //Then
         characterViewModel.run {
@@ -99,7 +97,9 @@ class CharactersViewModelTest {
     }
 
     companion object {
-        const val ERROR = "No fue posible cargar personajes"
+        const val ERROR = "Couldn't recover all characters"
+        const val NETWORK_ERROR = "Network error has occurred"
+        const val CHARACTERS_ERROR = "characters_error"
     }
 
 }
