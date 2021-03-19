@@ -5,7 +5,7 @@ import com.moises.rickandmortyserie.core.arch.DispatcherProviderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,8 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
-class CoreModule {
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
     @Provides
     @Singleton
@@ -45,7 +45,5 @@ class CoreModule {
     @Singleton
     fun providesDispatcher() : DispatcherProvider = DispatcherProviderImpl()
 
-    companion object {
-        const val URL_BASE = "https://rickandmortyapi.com/api/"
-    }
+    private const val URL_BASE = "https://rickandmortyapi.com/api/"
 }

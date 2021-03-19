@@ -7,6 +7,7 @@ import com.moises.rickandmortyserie.modules.character.framework.data.model.Singl
 class SingleCharacterToCharacterMapper : Mapper<SingleCharacter, Character>(){
     override fun transform(value: SingleCharacter): Character {
         return Character(
+            image = value.image.orEmpty(),
             name = value.name.orEmpty(),
             status = value.status.orEmpty(),
             species = value.species.orEmpty(),
