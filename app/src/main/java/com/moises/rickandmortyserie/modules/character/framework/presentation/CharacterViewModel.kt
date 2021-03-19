@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moises.rickandmortyserie.core.arch.ScreenState
 import com.moises.rickandmortyserie.core.assets.ResourceManager
+import com.moises.rickandmortyserie.modules.character.domain.model.Character
 import com.moises.rickandmortyserie.modules.character.domain.usecase.AllCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,13 +18,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharacterViewModel @Inject constructor(
-    private val allCharactersUseCase: AllCharactersUseCase,
-    private val resourceManager: ResourceManager
+        private val allCharactersUseCase: AllCharactersUseCase,
+        private val resourceManager: ResourceManager
 ) : ViewModel() {
 
     private var _allCharactersScreenState = MutableLiveData<ScreenState<AllCharactersScreenState>>()
     private var maxPages: Int = 2
     private var currentPage: Int = 1
+    private var allCharacters = mutableListOf<Character>()
 
     val allCharactersScreenState: LiveData<ScreenState<AllCharactersScreenState>>
         get() = _allCharactersScreenState
@@ -33,11 +35,11 @@ class CharacterViewModel @Inject constructor(
         when {
             canLoadMorePages() -> sendCharacterRequest()
             else -> _allCharactersScreenState.postValue(
-                ScreenState.Render(
-                    AllCharactersScreenState.Error(
-                        resourceManager.providesStringMessage(identifier = NOT_LOAD_ERROR)
+                    ScreenState.Render(
+                            AllCharactersScreenState.Error(
+                                    resourceManager.providesStringMessage(identifier = NOT_LOAD_ERROR)
+                            )
                     )
-                )
             )
         }
     }
@@ -48,27 +50,28 @@ class CharacterViewModel @Inject constructor(
     private fun sendCharacterRequest() {
         viewModelScope.launch {
             allCharactersUseCase.execute(AllCharactersUseCase.Params(currentPage))
-                .onStart {
-                    _allCharactersScreenState.postValue(ScreenState.Loading)
-                }.catch {
-                    _allCharactersScreenState.postValue(
-                        ScreenState.Render(
-                            AllCharactersScreenState.Error(
-                                resourceManager.providesStringMessage(identifier = CHARACTERS_ERROR)
-                            )
+                    .onStart {
+                        _allCharactersScreenState.postValue(ScreenState.Loading)
+                    }.catch {
+                        _allCharactersScreenState.postValue(
+                                ScreenState.Render(
+                                        AllCharactersScreenState.Error(
+                                                resourceManager.providesStringMessage(identifier = CHARACTERS_ERROR)
+                                        )
+                                )
                         )
-                    )
-                }.collect {
-                    maxPages = it.pagination.pages
-                    currentPage++
-                    _allCharactersScreenState.postValue(
-                        ScreenState.Render(
-                            AllCharactersScreenState.Success(
-                                it.all
-                            )
+                    }.collect {
+                        maxPages = it.pagination.pages
+                        currentPage++
+                        allCharacters.addAll(it.all)
+                        _allCharactersScreenState.postValue(
+                                ScreenState.Render(
+                                        AllCharactersScreenState.Success(
+                                                allCharacters
+                                        )
+                                )
                         )
-                    )
-                }
+                    }
         }
     }
 

@@ -15,14 +15,15 @@ import com.moises.rickandmortyserie.modules.character.framework.presentation.All
 import com.moises.rickandmortyserie.modules.character.framework.presentation.CharacterViewModel
 import com.moises.rickandmortyserie.modules.character.framework.ui.adapter.CharactersAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() {
 
     private val characterViewModel : CharacterViewModel by viewModels()
-    private lateinit var fragmentCharactersBinding: FragmentCharactersBinding
+    private lateinit var binding: FragmentCharactersBinding
     private lateinit var charactersAdapter: CharactersAdapter
-    private var allCharacters = mutableListOf<Character>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -41,7 +42,7 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
         })
     }
 
-    override fun bindViews(): Unit = with(fragmentCharactersBinding) {
+    override fun bindViews(): Unit = with(binding) {
         lstCharacters.apply {
             charactersAdapter = CharactersAdapter {
                 activity?.toast(it.name)
@@ -56,8 +57,8 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     override fun bindFragmentView(inflater: LayoutInflater, container: ViewGroup?): View {
-        fragmentCharactersBinding = FragmentCharactersBinding.inflate(inflater, container, false)
-        return fragmentCharactersBinding.root
+        binding = FragmentCharactersBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun renderScreenState(screenState: ScreenState<AllCharactersScreenState>) {
@@ -72,11 +73,11 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     override fun showLoader() {
-        fragmentCharactersBinding.pbCharactersLoad.visible()
+        binding.pbCharactersLoad.visible()
     }
 
     override fun hideLoader() {
-        fragmentCharactersBinding.pbCharactersLoad.gone()
+        binding.pbCharactersLoad.gone()
     }
 
     private fun renderCharacters(allCharactersScreenState: AllCharactersScreenState) {
@@ -88,13 +89,12 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
     }
 
     private fun populateCharactersList(all : List<Character>) {
-        allCharacters.addAll(all.toMutableList())
-        charactersAdapter.updateDataSet(allCharacters)
+        charactersAdapter.updateDataSet(all.toMutableList())
     }
 
     private fun addScrollListener() {
         InfiniteScrollProvider().attach(
-            fragmentCharactersBinding.lstCharacters,
+            binding.lstCharacters,
             object : InfiniteScrollProvider.OnLoadMoreListener {
                 override fun onLoadMore() {
                     characterViewModel.retrieveAllCharacters()
