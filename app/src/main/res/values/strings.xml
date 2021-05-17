@@ -8,4 +8,5 @@
     <string name="error_no_more_episodes">Lo sentimos ya no hay mas episodios por mostrar</string>
     <string name="error_episodes">No fue posible cargar los episodios</string>
     <string name="null_parameters_error">Los parametros no deben ser nulos</string>
+    <string name="full_character_name">Este es el nombre completo del personaje</string>
 </resources>
