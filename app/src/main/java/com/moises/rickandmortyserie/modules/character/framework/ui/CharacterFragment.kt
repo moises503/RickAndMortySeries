@@ -1,9 +1,11 @@
 package com.moises.rickandmortyserie.modules.character.framework.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -13,6 +15,7 @@ import com.moises.rickandmortyserie.databinding.FragmentCharactersBinding
 import com.moises.rickandmortyserie.modules.character.domain.model.Character
 import com.moises.rickandmortyserie.modules.character.framework.presentation.AllCharactersScreenState
 import com.moises.rickandmortyserie.modules.character.framework.presentation.CharacterViewModel
+import com.moises.rickandmortyserie.modules.character.framework.ui.CharacterDetailActivity.Companion.CHARACTER_ID
 import com.moises.rickandmortyserie.modules.character.framework.ui.adapter.CharactersAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,8 +47,13 @@ class CharacterFragment : BaseFragment<ScreenState<AllCharactersScreenState>>() 
 
     override fun bindViews(): Unit = with(binding) {
         lstCharacters.apply {
-            charactersAdapter = CharactersAdapter {
-                activity?.toast(it.name)
+            charactersAdapter = CharactersAdapter { character ->
+                activity?.let { fragmentActivity ->
+                    Intent(fragmentActivity, CharacterDetailActivity::class.java).apply {
+                        putExtra(CHARACTER_ID, character.id)
+                        startActivity(this)
+                    }
+                }
             }
             addItemDecoration(SpacesItemDecoration(SPACE_ITEM_DECORATION))
             adapter = charactersAdapter

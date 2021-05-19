@@ -1,7 +1,7 @@
 package com.moises.rickandmortyserie.modules.character.framework.di
 
-import com.moises.rickandmortyserie.modules.character.data.datasource.CharacterRepositoryImpl
-import com.moises.rickandmortyserie.modules.character.data.repository.RemoteCharacterDataSource
+import com.moises.rickandmortyserie.modules.character.data.repository.CharacterRepositoryImpl
+import com.moises.rickandmortyserie.modules.character.data.datasource.RemoteCharacterDataSource
 import com.moises.rickandmortyserie.modules.character.domain.repository.CharacterRepository
 import com.moises.rickandmortyserie.modules.character.framework.data.CharactersEndPoint
 import com.moises.rickandmortyserie.modules.character.framework.data.RemoteCharacterDataSourceImpl

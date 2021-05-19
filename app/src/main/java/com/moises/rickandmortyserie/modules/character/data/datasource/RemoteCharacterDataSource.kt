@@ -1,4 +1,4 @@
-package com.moises.rickandmortyserie.modules.character.data.repository
+package com.moises.rickandmortyserie.modules.character.data.datasource
 
 import com.moises.rickandmortyserie.modules.character.domain.model.AllCharacters
 import com.moises.rickandmortyserie.modules.character.domain.model.Character
