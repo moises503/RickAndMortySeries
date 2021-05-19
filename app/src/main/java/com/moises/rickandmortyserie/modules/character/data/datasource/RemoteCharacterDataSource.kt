@@ -6,5 +6,5 @@ import com.moises.rickandmortyserie.modules.character.domain.model.Character
 
 interface RemoteCharacterDataSource {
     suspend fun retrieveAllCharacters(currentPage : Int) : AllCharacters
-    suspend fun retrieveSingleCharacter(characterId : Int) : Character
+    suspend fun retrieveSingleCharacter(characterId : String) : Character
 }

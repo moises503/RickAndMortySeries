@@ -15,7 +15,7 @@ class RemoteCharacterDataSourceImpl @Inject constructor(
         return charactersEndPoint.getAllCharacters(currentPage).toAllCharacters()
     }
 
-    override suspend fun retrieveSingleCharacter(characterId: Int): Character {
-        return charactersEndPoint.retrieveCharacter(characterId.toString()).toCharacter()
+    override suspend fun retrieveSingleCharacter(characterId: String): Character {
+        return charactersEndPoint.retrieveCharacter(characterId).toCharacter()
     }
 }

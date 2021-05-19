@@ -19,7 +19,7 @@ class SingleCharacterViewModel @Inject constructor(
     private var _characterState = MutableLiveData<ScreenState<SingleCharacterViewState>>()
     val characterState : LiveData<ScreenState<SingleCharacterViewState>> get() = _characterState
 
-    fun retrieveCharacter(characterId: Int) {
+    fun retrieveCharacter(characterId: String) {
         _characterState.postValue(ScreenState.Loading)
         viewModelScope.launch {
             singleCharacterUseCase.execute(characterId).catch {

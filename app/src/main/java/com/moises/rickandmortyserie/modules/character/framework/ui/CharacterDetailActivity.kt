@@ -25,7 +25,9 @@ class CharacterDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         attachObservers()
         intent.apply {
-            characterViewModel.retrieveCharacter(getIntExtra(CHARACTER_ID, 0))
+            getStringExtra(CHARACTER_ID)?.let {
+                characterViewModel.retrieveCharacter(it)
+            }
         }
     }
 

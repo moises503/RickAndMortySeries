@@ -15,7 +15,7 @@ class CharacterRepositoryImpl @Inject constructor(
         emit(remoteCharacterDataSource.retrieveAllCharacters(currentPage))
     }
 
-    override fun retrieveSingleCharacter(characterId: Int): Flow<Character> = flow {
+    override fun retrieveSingleCharacter(characterId: String): Flow<Character> = flow {
         emit(remoteCharacterDataSource.retrieveSingleCharacter(characterId))
     }
 }

@@ -15,9 +15,9 @@ class SingleCharacterUseCase @Inject constructor(
     private val dispatcherProvider: DispatcherProvider,
     private val charactersRepository: CharacterRepository,
     private val resourceManager: ResourceManager
-) : SimpleUseCase<Int, Flow<Character>>() {
+) : SimpleUseCase<String, Flow<Character>>() {
 
-    override fun execute(params: Int?): Flow<Character> {
+    override fun execute(params: String?): Flow<Character> {
         params?.let {
             return charactersRepository.retrieveSingleCharacter(it)
                 .flowOn(dispatcherProvider.ioDispatcher())
